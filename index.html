@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you be my Valentine?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 50%, #ff91a4 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .sasuke-container {
+            margin-bottom: 20px;
+        }
+
+        .sasuke {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Cute Chibi Sasuke SVG styling */
+        .sasuke svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .heart-float {
+            position: absolute;
+            font-size: 24px;
+            animation: floatHeart 2s ease-in-out infinite;
+            top: -10px;
+            right: -10px;
+        }
+
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(-10deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+
+        .question {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .question span {
+            color: #e91e63;
+            font-weight: 700;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            min-height: 60px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #e91e63, #ff5722);
+            color: white;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
+        }
+
+        .btn-no {
+            background: #f0f0f0;
+            color: #666;
+            position: absolute;
+            transition: all 0.1s ease;
+        }
+
+        .btn-no:hover {
+            background: #e0e0e0;
+        }
+
+        .hint {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Celebration styles */
+        .celebration {
+            display: none;
+        }
+
+        .celebration.active {
+            display: block;
+        }
+
+        .celebration h2 {
+            font-size: 36px;
+            color: #e91e63;
+            margin-bottom: 20px;
+        }
+
+        .meme-container {
+            margin-top: 20px;
+        }
+
+        .meme-container img {
+            max-width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .love-message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall 3s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                top: 100vh;
+                transform: rotate(720deg);
+            }
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            animation: rise 6s ease-in infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .initial-content {
+            display: block;
+        }
+
+        .initial-content.hidden {
+            display: none;
+        }
+
+        /* Sparkle effect */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            animation: sparkle 0.6s ease-out forwards;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(180deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <div class="container">
+        <div class="initial-content" id="initialContent">
+            <div class="sasuke-container">
+                <div class="sasuke">
+                    <!-- Cute Chibi Sasuke -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Hair back -->
+                        <ellipse cx="50" cy="45" rx="38" ry="35" fill="#1a1a2e"/>
+                        <!-- Spiky hair back -->
+                        <polygon points="15,35 5,20 20,40" fill="#1a1a2e"/>
+                        <polygon points="85,35 95,20 80,40" fill="#1a1a2e"/>
+                        <polygon points="25,25 15,5 35,30" fill="#1a1a2e"/>
+                        <polygon points="75,25 85,5 65,30" fill="#1a1a2e"/>
+                        <polygon points="40,18 35,0 50,25" fill="#1a1a2e"/>
+                        <polygon points="60,18 65,0 50,25" fill="#1a1a2e"/>
+                        <polygon points="50,15 50,-5 55,20" fill="#1a1a2e"/>
+
+                        <!-- Face -->
+                        <ellipse cx="50" cy="55" rx="30" ry="28" fill="#fde4d3"/>
+
+                        <!-- Hair front -->
+                        <path d="M25,45 Q30,35 40,40 Q45,30 50,38 Q55,30 60,40 Q70,35 75,45 L75,50 Q65,45 50,48 Q35,45 25,50 Z" fill="#1a1a2e"/>
+
+                        <!-- Eyes -->
+                        <ellipse cx="38" cy="55" rx="8" ry="9" fill="white"/>
+                        <ellipse cx="62" cy="55" rx="8" ry="9" fill="white"/>
+                        <ellipse cx="38" cy="56" rx="5" ry="6" fill="#1a1a2e"/>
+                        <ellipse cx="62" cy="56" rx="5" ry="6" fill="#1a1a2e"/>
+                        <ellipse cx="36" cy="54" rx="2" ry="2" fill="white"/>
+                        <ellipse cx="60" cy="54" rx="2" ry="2" fill="white"/>
+
+                        <!-- Blush -->
+                        <ellipse cx="28" cy="62" rx="6" ry="3" fill="#ffb6c1" opacity="0.6"/>
+                        <ellipse cx="72" cy="62" rx="6" ry="3" fill="#ffb6c1" opacity="0.6"/>
+
+                        <!-- Small smile -->
+                        <path d="M45,68 Q50,73 55,68" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+                        <!-- Headband -->
+                        <rect x="20" y="38" width="60" height="8" fill="#4a5568" rx="2"/>
+                        <rect x="44" y="36" width="12" height="12" fill="#718096" rx="2"/>
+                        <path d="M47,42 L50,39 L53,42 L50,45 Z" fill="#4a5568"/>
+
+                        <!-- Headband tails -->
+                        <path d="M78,42 Q85,45 82,55 Q80,60 85,70" stroke="#4a5568" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        <path d="M80,42 Q87,46 84,56 Q82,62 88,72" stroke="#4a5568" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <div class="heart-float">💕</div>
+                </div>
+            </div>
+
+            <h1 class="question"><span>Alicia</span> will you be my valentine?</h1>
+
+            <div class="buttons">
+                <button class="btn btn-yes" id="yesBtn">Yes</button>
+                <button class="btn btn-no" id="noBtn">No</button>
+            </div>
+
+            <p class="hint">"No" seems a bit shy 😊</p>
+        </div>
+
+        <div class="celebration" id="celebration">
+            <div class="sasuke-container">
+                <div class="sasuke">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Hair back -->
+                        <ellipse cx="50" cy="45" rx="38" ry="35" fill="#1a1a2e"/>
+                        <!-- Spiky hair -->
+                        <polygon points="15,35 5,20 20,40" fill="#1a1a2e"/>
+                        <polygon points="85,35 95,20 80,40" fill="#1a1a2e"/>
+                        <polygon points="25,25 15,5 35,30" fill="#1a1a2e"/>
+                        <polygon points="75,25 85,5 65,30" fill="#1a1a2e"/>
+                        <polygon points="40,18 35,0 50,25" fill="#1a1a2e"/>
+                        <polygon points="60,18 65,0 50,25" fill="#1a1a2e"/>
+                        <polygon points="50,15 50,-5 55,20" fill="#1a1a2e"/>
+
+                        <!-- Face -->
+                        <ellipse cx="50" cy="55" rx="30" ry="28" fill="#fde4d3"/>
+
+                        <!-- Hair front -->
+                        <path d="M25,45 Q30,35 40,40 Q45,30 50,38 Q55,30 60,40 Q70,35 75,45 L75,50 Q65,45 50,48 Q35,45 25,50 Z" fill="#1a1a2e"/>
+
+                        <!-- Happy closed eyes -->
+                        <path d="M30,55 Q38,50 46,55" stroke="#1a1a2e" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M54,55 Q62,50 70,55" stroke="#1a1a2e" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+                        <!-- Big blush -->
+                        <ellipse cx="28" cy="62" rx="8" ry="4" fill="#ff6b9d" opacity="0.7"/>
+                        <ellipse cx="72" cy="62" rx="8" ry="4" fill="#ff6b9d" opacity="0.7"/>
+
+                        <!-- Big happy smile -->
+                        <path d="M40,68 Q50,78 60,68" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+                        <!-- Headband -->
+                        <rect x="20" y="38" width="60" height="8" fill="#4a5568" rx="2"/>
+                        <rect x="44" y="36" width="12" height="12" fill="#718096" rx="2"/>
+                        <path d="M47,42 L50,39 L53,42 L50,45 Z" fill="#4a5568"/>
+
+                        <!-- Headband tails -->
+                        <path d="M78,42 Q85,45 82,55 Q80,60 85,70" stroke="#4a5568" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        <path d="M80,42 Q87,46 84,56 Q82,62 88,72" stroke="#4a5568" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <div class="heart-float">💕</div>
+                </div>
+            </div>
+
+            <h2>YAY! 🎉</h2>
+
+            <div class="meme-container">
+                <img src="https://i.imgflip.com/65efzo.gif" alt="Celebration" id="memeImg">
+            </div>
+
+            <p class="love-message">I knew you'd say yes! 💕<br>Can't wait to spend Valentine's Day with you!</p>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const initialContent = document.getElementById('initialContent');
+        const celebration = document.getElementById('celebration');
+        const container = document.querySelector('.container');
+        const floatingHearts = document.getElementById('floatingHearts');
+
+        // Create floating hearts background
+        function createFloatingHearts() {
+            const hearts = ['💕', '💖', '💗', '💓', '💝', '❤️'];
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (4 + Math.random() * 4) + 's';
+                    heart.style.animationDelay = Math.random() * 2 + 's';
+                    floatingHearts.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 10000);
+                }, i * 500);
+            }
+        }
+
+        createFloatingHearts();
+        setInterval(createFloatingHearts, 8000);
+
+        // No button runs away from mouse
+        let noBtnPosition = { x: 0, y: 0 };
+
+        function getRandomPosition() {
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Get viewport dimensions
+            const maxX = window.innerWidth - btnRect.width - 20;
+            const maxY = window.innerHeight - btnRect.height - 20;
+
+            let newX = Math.random() * maxX;
+            let newY = Math.random() * maxY;
+
+            // Make sure button stays somewhat visible
+            newX = Math.max(20, Math.min(newX, maxX));
+            newY = Math.max(20, Math.min(newY, maxY));
+
+            return { x: newX, y: newY };
+        }
+
+        function moveNoButton() {
+            const pos = getRandomPosition();
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = pos.x + 'px';
+            noBtn.style.top = pos.y + 'px';
+            noBtn.style.zIndex = '1000';
+        }
+
+        // Move button when mouse gets close
+        document.addEventListener('mousemove', (e) => {
+            const btnRect = noBtn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
+
+            const distance = Math.sqrt(
+                Math.pow(e.clientX - btnCenterX, 2) +
+                Math.pow(e.clientY - btnCenterY, 2)
+            );
+
+            // If mouse is within 100px of button, move it
+            if (distance < 100) {
+                moveNoButton();
+            }
+        });
+
+        // Also move on hover just in case
+        noBtn.addEventListener('mouseenter', moveNoButton);
+
+        // Touch support for mobile
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // Yes button celebration
+        yesBtn.addEventListener('click', () => {
+            // Hide initial content, show celebration
+            initialContent.classList.add('hidden');
+            celebration.classList.add('active');
+
+            // Hide the No button
+            noBtn.style.display = 'none';
+
+            // Create confetti
+            createConfetti();
+
+            // Create sparkles
+            createSparkles();
+        });
+
+        function createConfetti() {
+            const colors = ['#ff6b9d', '#c44569', '#f8b500', '#ff6348', '#ff4757', '#2ed573', '#1e90ff', '#ff6b81'];
+
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        function createSparkles() {
+            const sparkles = ['✨', '💖', '⭐', '💕'];
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                    sparkle.style.left = Math.random() * 100 + 'vw';
+                    sparkle.style.top = Math.random() * 100 + 'vh';
+                    document.body.appendChild(sparkle);
+
+                    setTimeout(() => sparkle.remove(), 600);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
